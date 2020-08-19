@@ -1,10 +1,5 @@
 name: Test API Examples
 
-on:
-  push:
-    branches:
-      - master
-
 jobs:
   formatting:
     name: Check Code Formatting
