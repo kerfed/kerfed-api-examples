@@ -16,6 +16,7 @@ https://docs.kerfed.com
 import os
 import sys
 import json
+import time
 
 # requests is the only non-stdlib dependency
 import requests
@@ -72,22 +73,37 @@ if __name__ == '__main__':
 
         if s3_transfer_response.status_code != 200:
             raise ValueError(s3_transfer_response.text)
-        print('file transferred; blocking until analysis completes')
+        print('file uploaded!')
 
-        # Create a new analysis of this uploaded assembly.
-        analyze_response = s.post(
-            '{}/tools/analyze'.format(API_ROOT),
-            params={"timeout": 15000},
-            json={'uploadIds': [upload['id']],
-                  'shopId': 'kerfed'})
+        quote_response = s.post('{}/quotes'.format(API_ROOT),
+                                params={"timeout": 15000},
+                                json={'uploadIds': [upload['id']],
+                                      'shopId': 'kerfed'})
+        if quote_response.status_code != 201:
+            raise ValueError('unable to create quote!')
+        quoteInfo = quote_response.json()
 
-        if analyze_response.status_code != 200:
-            raise ValueError(analyze_response.text)
-        analysis = analyze_response.json()
+        for _ in range(10):
+            # get the detailed information on the file we uploaded
+            fileInfo = s.get('{API}/quotes/{QID}/files/{FID}'.format(
+                API=API_ROOT,
+                QID=quoteInfo['id'],
+                FID=upload['id'])).json()
+
+            # if the remote processing is done exit
+            if fileInfo['status']['isDone']:
+                break
+            print('blocking until analysis completes...')
+            time.sleep(2.0)
+
+        # get the detailed information on parts in this quote
+        partsInfo = s.get('{API}/quotes/{QID}/parts'.format(
+            API=API_ROOT,
+            QID=quoteInfo['id'])).json()
         print('analysis succeeded!')
 
     # Print the result of the analysis operation
-    print(json.dumps(analysis, indent=2))
+    print(json.dumps(partsInfo, indent=2))
 
     # show the SVG preview of the first part
     # note that these signed links expire so you will need to either
@@ -95,5 +111,5 @@ if __name__ == '__main__':
     # for new signed URLS
     if '-t' not in sys.argv:
         import webbrowser
-        webbrowser.open(analysis['parts']['items'][0]
+        webbrowser.open(partsInfo['items'][0]
                         ['methods']['flat']['drawings']['svg'])
