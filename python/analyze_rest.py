@@ -3,11 +3,11 @@
 analyze_rest.py
 -----------
 
-Example of uploading a CAD assembly file and fetching the processed
-result using only generic dependencies (requests).
+Example of uploading a CAD assembly file and fetching the
+processed result using only stdlib dependencies and `requests`.
 
 Note that we plan to release a helper libraries for both
- Typescript/Javascript and Python to reduce the boilerplate.
+Typescript and Python to reduce the amount of boilerplate.
 
 The most recent generated API documentation is available at:
 https://docs.kerfed.com
@@ -31,10 +31,6 @@ API_KEY = os.environ['KERFED_API_KEY']
 DEMO_FILE = '../models/bent.stl'
 
 if __name__ == '__main__':
-    # get the demo model as raw bytes
-    with open(DEMO_FILE, 'rb') as f:
-        FILE_DATA = f.read()
-
     # the name to store our file remotely as
     # this is just using the filename without path
     FILENAME = os.path.split(DEMO_FILE)[-1]
