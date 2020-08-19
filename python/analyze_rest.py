@@ -47,9 +47,10 @@ if __name__ == '__main__':
 
         # Request a signed URL to upload the file.
         # We specify our desired filename here.
-        upload_response = s.post(f'{API_ROOT}/uploads', json={
-            "filename": FILENAME,
-            "contentType": CONTENT_TYPE})
+        upload_response = s.post(
+            '{}/uploads'.format(API_ROOT),
+            json={"filename": FILENAME,
+                  "contentType": CONTENT_TYPE})
 
         if upload_response.status_code != 201:
             raise ValueError(upload_response.text)
@@ -75,7 +76,7 @@ if __name__ == '__main__':
 
         # Create a new analysis of this uploaded assembly.
         analyze_response = s.post(
-            f'{API_ROOT}/tools/analyze',
+            '{}/tools/analyze'.format(API_ROOT),
             params={"timeout": 15000},
             json={'uploadIds': [upload['id']],
                   'shopId': 'kerfed'})
