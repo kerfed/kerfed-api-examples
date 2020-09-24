@@ -4,7 +4,7 @@ Examples using the Kerfed API to analyze CAD assemblies.
 
 ## API Keys
 
-These examples use an environment variable `KERFED_API_KEY`. To get an API key, log in to [kerfed.com/account](https://kerfed.com/account) and then use the API key management console to create an API Kye:
+These examples use an environment variable `KERFED_API_KEY`. To get an API key, log in to [kerfed.com/account](https://kerfed.com/account) and then use the API key management console to create an API key:
 [![Kerfed API Keys](images/account.png)](https://kerfed.com/account)
 
 
